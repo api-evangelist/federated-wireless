@@ -1,0 +1,188 @@
+generated: '2026-08-12'
+method: searched
+source: probed /.well-known/* on every Federated Wireless host reachable from the public internet
+description: >-
+  Well-known discovery surface probed across every Federated Wireless host. The single real find is
+  on federatedwireless.ai, the company's primary (post-rename) marketing host, which publishes BOTH
+  RFC 8414 OAuth authorization-server metadata and RFC 9728 OAuth protected-resource metadata
+  pointing at a remote Model Context Protocol server at
+  https://federatedwireless.ai/wp-json/mcp/mcp-oauth-server. No security.txt (RFC 9116), no
+  api-catalog (RFC 9727), no OIDC discovery document and no A2A agent card were found on any host.
+  Two hosts are pure soft-200 traps and every 200 on them was rejected: the legacy
+  federatedwireless.com WordPress site answers HTTP 200 with a 131 KB HTML page for every
+  /.well-known/* path, and spectrum.federatedwireless.com (the Spectrum Controller single-page app on
+  CloudFront/S3) answers HTTP 200 with the same 1,445-byte index.html for every path.
+hosts:
+- host: https://federatedwireless.ai
+  note: >-
+    Primary company host since the 2026 rename from federatedwireless.com. WordPress.com-hosted
+    (host-header: WordPress.com). The OAuth metadata is platform-provided by the WordPress MCP
+    integration but is served from the company's own domain and names that domain as issuer.
+  documents:
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    content_type: application/json; charset=UTF-8
+    file: federated-wireless-oauth-authorization-server.json
+    note: >-
+      RFC 8414 — issuer https://federatedwireless.ai, single scope `mcp`, authorization_code +
+      refresh_token, PKCE S256 required, public clients (token_endpoint_auth_methods_supported
+      ["none"]), client_id_metadata_document_supported true. Served after a 301 to the
+      trailing-slash form.
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    content_type: application/json; charset=UTF-8
+    file: federated-wireless-oauth-protected-resource.json
+    note: >-
+      RFC 9728 — resource https://federatedwireless.ai/wp-json/mcp/mcp-oauth-server,
+      authorization_servers [https://federatedwireless.ai], bearer in header, scope `mcp`.
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://federatedwireless.com
+  note: >-
+    Legacy host. It 200s and renders a "We have moved!" interstitial that redirects to
+    federatedwireless.ai after five seconds, and it answers HTTP 200 with that same ~131 KB HTML
+    body for EVERY /.well-known/* path. No 200 on this host is evidence of a published document;
+    all are rejected as soft-200 / html-catchall.
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    accepted: false
+    reason: html-soft-200
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    accepted: false
+    reason: html-soft-200
+  - path: /.well-known/agent-card.json
+    status: 200
+    accepted: false
+    reason: html-soft-200
+  - path: /.well-known/agent.json
+    status: 200
+    accepted: false
+    reason: html-soft-200
+  - path: /.well-known/api-catalog
+    status: 200
+    accepted: false
+    reason: html-soft-200
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    accepted: false
+    reason: html-soft-200
+  - path: /.well-known/openid-configuration
+    status: 200
+    accepted: false
+    reason: html-soft-200
+- host: https://spectrum.federatedwireless.com
+  note: >-
+    The Spectrum Controller web application (CloudFront in front of S3). Single-page-app catch-all —
+    every path returns HTTP 200 with the same 1,445-byte index.html titled "Federated Wireless
+    Spectrum Controller". All 200s rejected.
+  documents:
+  - path: /.well-known/agent-card.json
+    status: 200
+    accepted: false
+    reason: html-spa-catchall
+  - path: /.well-known/agent.json
+    status: 200
+    accepted: false
+    reason: html-spa-catchall
+  - path: /.well-known/security.txt
+    status: 200
+    accepted: false
+    reason: html-spa-catchall
+- host: https://spectrum-api.federatedwireless.com
+  note: >-
+    AWS API Gateway (d-d3psb9cl3e.execute-api.us-west-2.amazonaws.com). Every path — including every
+    /.well-known/* path — returns HTTP 403 {"message": "Missing Authentication Token"} with
+    x-amzn-errortype MissingAuthenticationTokenException. Nothing is served anonymously.
+  documents:
+  - path: /.well-known/agent-card.json
+    status: 403
+  - path: /.well-known/security.txt
+    status: 403
+  - path: /.well-known/openid-configuration
+    status: 403
+- host: https://spectrum-iam.federatedwireless.com
+  note: AWS API Gateway behind CloudFront. All paths 403 MissingAuthenticationTokenException.
+  documents:
+  - path: /.well-known/agent-card.json
+    status: 403
+  - path: /.well-known/security.txt
+    status: 403
+  - path: /.well-known/openid-configuration
+    status: 403
+- host: https://spectrum-kpi.federatedwireless.com
+  note: AWS API Gateway behind CloudFront. All paths 403 MissingAuthenticationTokenException.
+  documents:
+  - path: /.well-known/agent-card.json
+    status: 403
+  - path: /.well-known/security.txt
+    status: 403
+- host: https://sas.federatedwireless.com
+  note: >-
+    Resolves to 35.166.171.66 (AWS us-west-2) but refuses TCP on 443 from the public internet —
+    consistent with the WInnForum SAS-CBSD interface, which is mutual-TLS and IP-allowlisted to
+    registered CBSD operators. No probe returned any HTTP status.
+  documents:
+  - path: /.well-known/security.txt
+    status: 0
+    reason: connection-refused
+  - path: /.well-known/agent-card.json
+    status: 0
+    reason: connection-refused
+- host: https://afc.federatedwireless.com
+  note: >-
+    Resolves to an AWS ELB (a98859f24fc724909b8a256a877bbb50-431290955.us-west-2.elb.amazonaws.com)
+    but refuses TCP on 443 from the public internet — the 6 GHz AFC device interface is likewise
+    restricted to certified devices/proxies. No probe returned any HTTP status.
+  documents:
+  - path: /.well-known/agent-card.json
+    status: 0
+    reason: connection-refused
+- host: https://myfederated.federatedwireless.com
+  note: >-
+    Zendesk-hosted customer portal (federatedwirelessinc.zendesk.com). /hc/en-us returns 403 to an
+    anonymous visitor.
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+security_txt:
+  present: false
+  note: >-
+    No RFC 9116 security.txt is served on any Federated Wireless host, and no vulnerability
+    disclosure or bug-bounty page was found. See security/ — the security-programs probe returned
+    vdp=none trust=none.
+api_catalog:
+  present: false
+agent_card:
+  present: false
+  note: >-
+    Both /.well-known/agent-card.json and the legacy /.well-known/agent.json were probed on every
+    host. federatedwireless.ai 404s both; federatedwireless.com and spectrum.federatedwireless.com
+    return HTML soft-200s that were rejected; the API Gateway hosts 403; the SAS and AFC hosts
+    refuse the connection. NO agent card artifact was written.
+x-evidence:
+  fetched: '2026-08-12'
+  probes:
+  - url: https://federatedwireless.ai/.well-known/oauth-authorization-server
+    status: 200
+  - url: https://federatedwireless.ai/.well-known/oauth-protected-resource
+    status: 200
+  - url: https://federatedwireless.ai/.well-known/security.txt
+    status: 404
+  - url: https://federatedwireless.ai/.well-known/agent-card.json
+    status: 404
+  - url: https://federatedwireless.com/.well-known/agent-card.json
+    status: 200
+  - url: https://spectrum-api.federatedwireless.com/.well-known/security.txt
+    status: 403

@@ -1,0 +1,66 @@
+generated: '2026-08-12'
+method: probed
+source: https://federatedwireless.ai/.well-known/oauth-authorization-server
+docs: null
+description: >-
+  Federated Wireless's only public OAuth surface is the authorization server advertised on
+  federatedwireless.ai for its remote MCP server. It declares a single coarse scope, `mcp`. There is
+  no published scope, permission or role reference anywhere in the public Federated Wireless surface,
+  and no other Federated Wireless host publishes RFC 8414 or OIDC discovery metadata. The company's
+  product APIs (Spectrum Controller external SAS API, IAM API, KPI API) are behind AWS API Gateway
+  authentication with no anonymous discovery document, so they contribute no scope surface.
+schemes:
+- name: FederatedWirelessMCPOAuth
+  type: oauth2
+  source: https://federatedwireless.ai/.well-known/oauth-authorization-server
+  issuer: https://federatedwireless.ai
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://federatedwireless.ai/oauth/authorize
+    tokenUrl: https://federatedwireless.ai/oauth/token
+    revocationUrl: https://federatedwireless.ai/oauth/revoke
+    pkce: required
+    code_challenge_methods: [S256]
+    refresh_tokens: true
+    client_authentication: none (public client)
+    dynamic_client_registration: >-
+      No RFC 7591 registration_endpoint is advertised. The server sets
+      client_id_metadata_document_supported: true, so clients identify themselves with a client-ID
+      metadata document URL rather than pre-registering.
+scopes:
+- scope: mcp
+  description: >-
+    Access the Federated Wireless MCP server at
+    https://federatedwireless.ai/wp-json/mcp/mcp-oauth-server. Coarse single-scope model — the
+    authorization server advertises no finer-grained read/write split, and no scope documentation is
+    published.
+  flows: [authorizationCode]
+  sources: [https://federatedwireless.ai/.well-known/oauth-authorization-server]
+  protected_resource: https://federatedwireless.ai/wp-json/mcp/mcp-oauth-server
+not_applicable:
+- surface: Spectrum Controller external SAS API (spectrum-api.federatedwireless.com/v1)
+  reason: >-
+    AWS API Gateway. Anonymous requests return 403 MissingAuthenticationTokenException with no
+    WWW-Authenticate challenge and no discovery document, so no OAuth scope surface is observable.
+    Federated Wireless publishes no authentication or authorization reference for it.
+- surface: Spectrum IAM API (spectrum-iam.federatedwireless.com/v1)
+  reason: Same — 403 MissingAuthenticationTokenException, no anonymous discovery.
+- surface: SAS-CBSD interface (sas.federatedwireless.com)
+  reason: >-
+    The WInnForum SAS-CBSD protocol (WINNF-TS-0016) authenticates CBSDs with mutual TLS client
+    certificates, not OAuth. The host refuses TCP 443 from the public internet.
+- surface: 6 GHz AFC device interface (afc.federatedwireless.com)
+  reason: >-
+    The WInnForum AFC System to AFC Device interface authenticates certified devices/proxies, not
+    OAuth. The host refuses TCP 443 from the public internet.
+x-evidence:
+  fetched: '2026-08-12'
+  probes:
+  - url: https://federatedwireless.ai/.well-known/oauth-authorization-server
+    status: 200
+  - url: https://federatedwireless.ai/.well-known/oauth-protected-resource
+    status: 200
+  - url: https://federatedwireless.ai/.well-known/openid-configuration
+    status: 404
+  - url: https://spectrum-api.federatedwireless.com/v1
+    status: 403

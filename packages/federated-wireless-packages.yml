@@ -1,0 +1,89 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  npm, PyPI, RubyGems, crates.io, Maven Central, pkg.go.dev, NuGet, Packagist + both Federated
+  Wireless GitHub organizations + the full public website
+package_count: 0
+official_package_count: 0
+description: >-
+  Federated Wireless publishes no client libraries or SDKs in any public package registry, and ships
+  no first-party source code on GitHub. Both GitHub organizations that carry the company name exist
+  but contain only forks of other people's projects. There is nothing for a developer to install.
+packages: []
+registries_searched:
+- registry: npm
+  query: federated-wireless / @federatedwireless
+  result: no first-party package
+  status: 404 on @federatedwireless/sdk; keyword search returned only unrelated packages
+- registry: pypi
+  query: federated-wireless / federatedwireless
+  result: no first-party package
+  status: 404
+- registry: rubygems
+  query: federated-wireless
+  result: no first-party package
+  status: 404
+- registry: crates.io
+  query: federated-wireless
+  result: no first-party package
+  status: 403 (registry blocked the unauthenticated request; no evidence of a package either way)
+- registry: maven-central
+  query: federatedwireless
+  result: no first-party artifact
+- registry: nuget
+  query: federatedwireless
+  result: no first-party package
+- registry: pkg.go.dev
+  query: federatedwireless.com
+  result: no first-party module
+- registry: packagist
+  query: federated-wireless
+  result: no first-party package
+github_organizations:
+- org: federatedwireless
+  url: https://github.com/federatedwireless
+  created: '2019-01-24'
+  public_repos: 2
+  first_party_code: false
+  repos:
+  - name: federatedwireless/superset
+    fork: true
+    upstream: Apache Superset
+    pushed: '2026-03-30'
+    note: Fork of the Apache Superset data-visualization platform. No Federated Wireless product code.
+  - name: federatedwireless/superset-mcp-plugins
+    fork: true
+    pushed: '2025-12-21'
+    note: >-
+      Fork of a Superset MCP plugins project. Interesting as a signal that the company is working
+      with MCP internally, but it is a fork, not a published Federated Wireless artifact.
+- org: federated-wireless
+  url: https://github.com/federated-wireless
+  created: '2015-01-13'
+  public_repos: 1
+  first_party_code: false
+  repos:
+  - name: federated-wireless/Spectrum-Access-System
+    fork: true
+    upstream: https://github.com/Wireless-Innovation-Forum/Spectrum-Access-System
+    pushed: '2019-03-20'
+    note: >-
+      Fork of the Wireless Innovation Forum's SAS testing and interoperability repository, last
+      pushed 2019. The upstream is the standards body's, not Federated Wireless's.
+note: >-
+  package_count is a real, checked zero. No `SDKs` pointer is emitted in apis.yml, because emitting
+  one would assert client libraries the company does not ship. Version and published fields are
+  omitted only because there is no package to carry them.
+x-evidence:
+  fetched: '2026-08-12'
+  probes:
+  - url: https://pypi.org/pypi/federatedwireless/json
+    status: 404
+  - url: https://rubygems.org/api/v1/gems/federated-wireless.json
+    status: 404
+  - url: https://registry.npmjs.org/@federatedwireless%2Fsdk
+    status: 404
+  - url: https://api.github.com/orgs/federatedwireless
+    status: 200
+  - url: https://api.github.com/orgs/federated-wireless
+    status: 200

@@ -1,0 +1,84 @@
+generated: '2026-08-12'
+method: searched
+source: https://federatedwireless.ai/.well-known/oauth-protected-resource
+status: published
+description: >-
+  Federated Wireless publishes a remote Model Context Protocol server on its primary company host,
+  federatedwireless.ai. It is not announced in any Federated Wireless documentation, press release
+  or MCP registry — it was discovered by probing /.well-known/* , which returns both RFC 8414
+  authorization-server metadata and RFC 9728 protected-resource metadata naming the MCP endpoint.
+  The server fronts the Federated Wireless WordPress content estate (the marketing site, product
+  pages, blog and press releases), NOT the Spectrum Controller, the CBRS SAS or the 6 GHz AFC. An
+  agent that authorizes against this server gains access to site content, not to spectrum
+  operations. This is the WordPress.com platform MCP integration, served from the company's own
+  domain and naming that domain as the OAuth issuer.
+server:
+  name: federated-wireless
+  transport: http
+  url: https://federatedwireless.ai/wp-json/mcp/mcp-oauth-server
+  protocol: MCP over HTTP (JSON-RPC 2.0)
+  implementation: >-
+    WordPress REST namespace `mcp` on the Federated Wireless site (WordPress.com Atomic hosting,
+    Divi theme, All in One SEO). Route `mcp/mcp-oauth-server`. The site's /wp-json/ index advertises
+    both an `mcp` namespace and a `wp-abilities/v1` namespace across 858 registered REST routes.
+authorization:
+  required: true
+  model: OAuth 2.1 authorization code with PKCE
+  authorization_servers:
+  - https://federatedwireless.ai
+  issuer: https://federatedwireless.ai
+  authorization_endpoint: https://federatedwireless.ai/oauth/authorize
+  token_endpoint: https://federatedwireless.ai/oauth/token
+  revocation_endpoint: https://federatedwireless.ai/oauth/revoke
+  grant_types_supported: [authorization_code, refresh_token]
+  response_types_supported: [code]
+  code_challenge_methods_supported: [S256]
+  token_endpoint_auth_methods_supported: [none]
+  client_id_metadata_document_supported: true
+  bearer_methods_supported: [header]
+  scopes_supported: [mcp]
+  detail: scopes/federated-wireless-scopes.yml
+  challenge: >-
+    An anonymous JSON-RPC call returns 401 with a spec-correct RFC 9728 challenge —
+    www-authenticate: Bearer realm="https://federatedwireless.ai",
+    resource_metadata="https://federatedwireless.ai/.well-known/oauth-protected-resource"
+tools:
+  discovered: false
+  discovery_method: >-
+    POST {"jsonrpc":"2.0","id":1,"method":"tools/list"} with
+    Accept: application/json, text/event-stream
+  http_status: 401
+  response: '{"code":"mcp_unauthorized","message":"MCP authentication required.","data":{"status":401}}'
+  note: >-
+    The live tool list and every per-tool inputSchema are auth-gated. Federated Wireless publishes
+    no tool inventory in its documentation, and the site's llms.txt (which IS published) is an
+    All in One SEO sitemap-style link index with no tool list in it. NO tool list is recorded here —
+    deriving one would be fabrication. Enumerating the surface requires an authorized session.
+related_surfaces:
+  openapi: null
+  note: >-
+    Federated Wireless publishes no OpenAPI, Swagger, AsyncAPI or GraphQL contract on any host, so
+    there is nothing to bind these tools to and no mcp/federated-wireless-tool-crosswalk.yml was
+    written. The company's real product APIs — the Spectrum Controller external SAS API, the IAM
+    API and the KPI/analytics API — are AWS API Gateway endpoints that return 403
+    MissingAuthenticationTokenException to every anonymous request, on entirely different hosts
+    from this MCP server. The two surfaces are fully disjoint.
+x-evidence:
+  fetched: '2026-08-12'
+  probes:
+  - url: https://federatedwireless.ai/.well-known/oauth-protected-resource
+    status: 200
+    content_type: application/json
+  - url: https://federatedwireless.ai/.well-known/oauth-authorization-server
+    status: 200
+    content_type: application/json
+  - url: https://federatedwireless.ai/wp-json/mcp/mcp-oauth-server
+    method: POST tools/list
+    status: 401
+  - url: https://federatedwireless.ai/wp-json/mcp
+    status: 404
+  - url: https://federatedwireless.ai/mcp
+    status: 404
+  - url: https://federatedwireless.ai/wp-json/
+    status: 200
+    note: REST index; namespaces include `mcp` and `wp-abilities/v1`; 858 routes.

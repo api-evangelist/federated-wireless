@@ -1,0 +1,63 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  https://federatedwireless.ai/ (full public surface) + live header inspection of every Federated
+  Wireless API host
+limit_count: 0
+docs: null
+description: >-
+  Federated Wireless documents no rate limits anywhere public. There is no developer portal, no API
+  reference and no docs host on which limits could be published, and the company's own llms.txt page
+  index confirms no such page exists. Runtime rate-limit signalling could not be observed either:
+  every product API host rejects anonymous requests before returning any RateLimit-family header.
+limits: []
+response_headers:
+  observed: []
+  probed_hosts:
+  - host: https://spectrum-api.federatedwireless.com/v1
+    status: 403
+    headers_seen: [x-amzn-requestid, x-amzn-errortype]
+    ratelimit_headers: none
+    note: >-
+      AWS API Gateway returns MissingAuthenticationTokenException before any throttling headers. API
+      Gateway does support account/stage throttling and 429 with Retry-After, but nothing is
+      advertised anonymously and nothing is documented, so no limit is recorded.
+  - host: https://spectrum-iam.federatedwireless.com/v1
+    status: 403
+    ratelimit_headers: none
+  - host: https://spectrum-kpi.federatedwireless.com/v2.0
+    status: 403
+    ratelimit_headers: none
+  - host: https://federatedwireless.ai/wp-json/mcp/mcp-oauth-server
+    status: 401
+    ratelimit_headers: none
+    note: >-
+      The 401 carries www-authenticate and CORS headers but no X-RateLimit-*, RateLimit-* or
+      Retry-After.
+  - host: https://sas.federatedwireless.com
+    status: 0
+    reason: connection-refused
+  - host: https://afc.federatedwireless.com
+    status: 0
+    reason: connection-refused
+protocol_cadence_note: >-
+  Not a rate limit, but the closest published throughput contract: the WInnForum SAS-CBSD protocol
+  the company implements requires CBSDs to heartbeat on a SAS-assigned interval, and the 6 GHz AFC
+  interface expects an availableSpectrumInquiry roughly every 24 hours per device. Those cadences are
+  set by the WInnForum specifications and the FCC rules, not by a Federated Wireless rate-limit
+  policy, so they are recorded here as context only and are NOT counted in limit_count.
+note: >-
+  limit_count is a real, checked zero — the docs were searched and the runtime headers were
+  inspected. An agent integrating with these APIs has no published limit and no runtime signal to
+  back off against.
+x-evidence:
+  fetched: '2026-08-12'
+  probes:
+  - url: https://spectrum-api.federatedwireless.com/v1
+    status: 403
+  - url: https://spectrum-kpi.federatedwireless.com/v2.0
+    status: 403
+  - url: https://federatedwireless.ai/wp-json/mcp/mcp-oauth-server
+    status: 401
+  - url: https://federatedwireless.ai/llms.txt
+    status: 200

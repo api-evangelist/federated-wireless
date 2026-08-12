@@ -1,18 +1,208 @@
 aid: federated-wireless
 name: Federated Wireless
-description: 'Federated Wireless is a company surfaced via the API Evangelist harvest backlog (source:
-  secondary-market) and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  Federated Wireless, founded in 2012 and headquartered in Arlington, Virginia, is a shared- and
+  unlicensed-spectrum coordination company. It is one of the FCC-certified CBRS Spectrum Access
+  System (SAS) administrators for the 3.5 GHz band, operates a nationwide Environmental Sensing
+  Capability (ESC) network, and is one of the seven 6 GHz Automated Frequency Coordination (AFC)
+  systems the FCC Office of Engineering and Technology approved for commercial operation in February
+  2024. Its cloud-native platform — the Spectrum Controller, the Automated Network Planner (ANP) and
+  the Spectrum AI physical-AI platform announced in June 2026 — assigns, monitors and optimizes
+  spectrum for carriers, broadband providers, enterprises running private 5G/LTE, and government
+  agencies. The programmable surface is real but almost entirely private: the regulated SAS-CBSD
+  (WInnForum WINNF-TS-0016) and 6 GHz AFC device interfaces run on hosts that refuse public
+  connections, and the Spectrum Controller's external SAS, IAM and KPI/analytics APIs are AWS API
+  Gateway endpoints that return 403 to every anonymous request. Federated Wireless publishes no
+  developer portal, no API reference and no machine-readable contract. The one openly discoverable
+  agent surface is a remote Model Context Protocol server on federatedwireless.ai, advertised through
+  RFC 8414 and RFC 9728 metadata, which fronts the company's WordPress content estate rather than its
+  spectrum platform.
+image: https://federatedwireless.ai/wp-content/uploads/2025/07/fw-federated-wireless-logo-horiz-rev-600px.png
 url: https://raw.githubusercontent.com/api-evangelist/federated-wireless/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-08-12'
 modified: '2026-08-12'
 tags:
 - Company
-apis: []
+- Spectrum
+- CBRS
+- Wireless
+- Telecommunications
+- Private 5G
+- Shared Spectrum
+- Spectrum Access System
+- 6 GHz
+- Network Planning
+- RF Engineering
+- Government
+apis:
+- aid: federated-wireless:spectrum-controller-external-api
+  name: Spectrum Controller External SAS API
+  description: >-
+    The external API of the Federated Wireless Spectrum Controller, the cloud platform that manages
+    CBRS spectrum assignment, CBSD lifecycle, monitoring and compliance. The Spectrum Controller web
+    application calls it as SAS_EXTERNAL_URL. Federated Wireless describes the surface on its CBRS
+    product page as "vendor extensions and other APIs" for real-time analytics and KPI reporting, a
+    Deregistration API for integrating SAS cost management into customer workflows, OEM onboarding
+    and integration, and a common management interface for multi-OEM deployments. No reference
+    documentation, OpenAPI definition or operation list is published; the endpoint returns HTTP 403
+    MissingAuthenticationTokenException to anonymous callers.
+  humanURL: https://federatedwireless.ai/products/cbrs/
+  baseURL: https://spectrum-api.federatedwireless.com/v1
+  tags:
+  - CBRS
+  - Spectrum
+  - SAS
+  properties:
+  - type: Authentication
+    url: authentication/federated-wireless-authentication.yml
+  - type: RateLimits
+    url: rate-limits/federated-wireless-rate-limits.yml
+  x-evidence:
+    base_url_source: https://spectrum.federatedwireless.com/configuration.js
+    base_url_note: >-
+      Read verbatim from SAS_EXTERNAL_URL in the Spectrum Controller web application's own
+      unauthenticated configuration.js, served by the provider from its own CloudFront/S3 host. Not
+      guessed from the domain.
+    http_status: 403
+    error_type: MissingAuthenticationTokenException
+    infrastructure: AWS API Gateway (d-d3psb9cl3e.execute-api.us-west-2.amazonaws.com)
+    fetched: '2026-08-12'
+- aid: federated-wireless:spectrum-iam-api
+  name: Spectrum IAM API
+  description: >-
+    The identity and access-management service behind the Federated Wireless Spectrum Controller,
+    called by the web application as IAM_BASE_URL. It backs account administration and the
+    self-management portal described in the company's Services Definition. Undocumented publicly;
+    anonymous requests return HTTP 403 MissingAuthenticationTokenException.
+  humanURL: https://federatedwireless.ai/services-definition/
+  baseURL: https://spectrum-iam.federatedwireless.com/v1
+  tags:
+  - Identity
+  - Access Management
+  properties:
+  - type: Authentication
+    url: authentication/federated-wireless-authentication.yml
+  x-evidence:
+    base_url_source: https://spectrum.federatedwireless.com/configuration.js
+    base_url_note: Read verbatim from IAM_BASE_URL in the provider's own public SPA configuration file.
+    http_status: 403
+    error_type: MissingAuthenticationTokenException
+    fetched: '2026-08-12'
+- aid: federated-wireless:spectrum-kpi-api
+  name: Spectrum KPI Analytics and Reporting API
+  description: >-
+    The analytics and reporting service behind the Spectrum Controller, called by the web application
+    as both ANALYTICS_BASE_URL and REPORTING_BASE_URL. It backs the spectrum analytics, network
+    visualization and reporting across time, geography and FCC ID that the Services Definition
+    describes. Undocumented publicly; anonymous requests return HTTP 403
+    MissingAuthenticationTokenException.
+  humanURL: https://federatedwireless.ai/services-definition/
+  baseURL: https://spectrum-kpi.federatedwireless.com/v2.0
+  tags:
+  - Analytics
+  - Reporting
+  - KPI
+  properties:
+  - type: Authentication
+    url: authentication/federated-wireless-authentication.yml
+  x-evidence:
+    base_url_source: https://spectrum.federatedwireless.com/configuration.js
+    base_url_note: >-
+      Read verbatim from ANALYTICS_BASE_URL / REPORTING_BASE_URL in the provider's own public SPA
+      configuration file. Both point at the same host and version.
+    http_status: 403
+    error_type: MissingAuthenticationTokenException
+    fetched: '2026-08-12'
+- aid: federated-wireless:sas-cbsd-interface
+  name: SAS-CBSD Interface
+  description: >-
+    The regulated Spectrum Access System to CBSD protocol interface Federated Wireless operates as an
+    FCC-certified SAS administrator. The protocol — registration, spectrum inquiry, grant, heartbeat,
+    relinquishment and deregistration — is defined by Wireless Innovation Forum WINNF-TS-0016 and FCC
+    47 CFR Part 96, not by Federated Wireless; the company implements it and markets a
+    "Deregistration API" from it. The interface is mutual-TLS and restricted to registered CBSD
+    operators, so it is not reachable from the public internet and no contract is published.
+  humanURL: https://federatedwireless.ai/products/cbrs/
+  baseURL: https://sas.federatedwireless.com
+  tags:
+  - CBRS
+  - SAS
+  - Spectrum
+  properties:
+  - type: Conformance
+    url: conformance/federated-wireless-conformance.yml
+  - type: Specification
+    name: WInnForum WINNF-TS-0016 SAS to CBSD Technical Specification
+    url: https://winnf.memberclicks.net/assets/CBRS/WINNF-TS-0016.pdf
+  x-evidence:
+    dns: 35.166.171.66 (AWS us-west-2)
+    http_status: 0
+    reason: TCP 443 refused from the public internet
+    base_url_note: >-
+      The host exists and resolves to company-controlled AWS infrastructure, but no handshake was
+      completed. The protocol it serves is the standards body's specification, which is deliberately
+      NOT saved into openapi/ or elsewhere in this repo — it is not a Federated Wireless contract.
+    fetched: '2026-08-12'
+- aid: federated-wireless:afc-device-interface
+  name: 6 GHz AFC Device Interface
+  description: >-
+    The Automated Frequency Coordination system interface Federated Wireless operates for the 6 GHz
+    band. On 2024-02-23 the FCC Office of Engineering and Technology approved seven AFC systems for
+    commercial operation, Federated Wireless among them, covering U-NII-5 (5.925-6.425 GHz) and
+    U-NII-7 (6.525-6.875 GHz) for standard-power access points and fixed client devices. The
+    availableSpectrumInquiry request/response contract is defined by the WInnForum AFC System to AFC
+    Device interface specification, not by Federated Wireless. The endpoint is restricted to certified
+    devices and proxies and is not reachable from the public internet.
+  humanURL: https://federatedwireless.ai/products/6ghz/
+  baseURL: https://afc.federatedwireless.com
+  tags:
+  - 6 GHz
+  - AFC
+  - Wi-Fi
+  - Spectrum
+  properties:
+  - type: Conformance
+    url: conformance/federated-wireless-conformance.yml
+  x-evidence:
+    dns: a98859f24fc724909b8a256a877bbb50-431290955.us-west-2.elb.amazonaws.com (AWS ELB)
+    http_status: 0
+    reason: TCP 443 refused from the public internet
+    fcc_approval: https://www.fcc.gov/document/oet-announces-approval-seven-6-ghz-band-afc-systems
+    fetched: '2026-08-12'
+- aid: federated-wireless:mcp-server
+  name: Federated Wireless MCP Server
+  description: >-
+    A remote Model Context Protocol server published on federatedwireless.ai, advertised through
+    RFC 8414 OAuth authorization-server metadata and RFC 9728 protected-resource metadata. It is not
+    announced in any Federated Wireless documentation or MCP registry — it was found by probing
+    /.well-known/*. The server fronts the Federated Wireless WordPress content estate (marketing
+    site, product pages, blog, press releases), not the Spectrum Controller or the spectrum platform.
+    Authorization is OAuth 2.1 authorization-code with PKCE (S256), a single `mcp` scope, public
+    clients (token_endpoint_auth_method none) and client-ID metadata documents. tools/list is
+    authenticated — an anonymous JSON-RPC call returns 401 mcp_unauthorized with a spec-correct
+    RFC 9728 challenge — so the live tool schemas require an authorized session.
+  humanURL: https://federatedwireless.ai/
+  baseURL: https://federatedwireless.ai/wp-json/mcp/mcp-oauth-server
+  tags:
+  - MCP
+  - Agents
+  - Content
+  properties:
+  - type: MCPServer
+    url: mcp/federated-wireless-mcp.yml
+  - type: OAuthScopes
+    url: scopes/federated-wireless-scopes.yml
+  - type: Authentication
+    url: authentication/federated-wireless-authentication.yml
+  x-evidence:
+    protected_resource: https://federatedwireless.ai/.well-known/oauth-protected-resource
+    authorization_server: https://federatedwireless.ai/.well-known/oauth-authorization-server
+    http_status: 200
+    tools_list_status: 401
+    fetched: '2026-08-12'
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -20,4 +210,92 @@ maintainers:
   email: info@apis.io
 common:
 - type: Website
-  url: https://forgeglobal.com/federated-wireless_stock/
+  url: https://federatedwireless.ai/
+- type: Portal
+  url: https://myfederated.federatedwireless.com
+- type: Support
+  url: https://federatedwireless.ai/support/
+- type: HelpCenter
+  url: https://myfederated.federatedwireless.com/hc/en-us
+- type: Blog
+  url: https://federatedwireless.ai/resources/blog/
+- type: BlogRSS
+  url: https://federatedwireless.ai/feed/
+- type: PressReleases
+  url: https://federatedwireless.ai/resources/press-releases/
+- type: Contact
+  url: https://federatedwireless.ai/contact/
+- type: Partners
+  url: https://federatedwireless.ai/partners/
+- type: Products
+  url: https://federatedwireless.ai/products/
+- type: About
+  url: https://federatedwireless.ai/about/
+- type: Certification
+  name: CPI Certification
+  url: https://federatedwireless.ai/cpi-certification/
+- type: ServiceLevelAgreement
+  name: Services Definition
+  url: https://federatedwireless.ai/services-definition/
+- type: TermsOfService
+  url: https://federatedwireless.ai/terms-of-use/
+- type: PrivacyPolicy
+  url: https://federatedwireless.ai/privacy-policy/
+- type: DataStatement
+  url: https://federatedwireless.ai/data-statement/
+- type: SignUp
+  url: https://myfederated.federatedwireless.com
+- type: GitHubOrganization
+  url: https://github.com/federatedwireless
+- type: LinkedIn
+  url: https://www.linkedin.com/company/2725741
+- type: Authentication
+  url: authentication/federated-wireless-authentication.yml
+- type: OAuthScopes
+  url: scopes/federated-wireless-scopes.yml
+- type: WellKnown
+  url: well-known/federated-wireless-well-known.yml
+- type: LLMsTxt
+  url: llms/federated-wireless-llms.txt
+- type: MCPServer
+  url: mcp/federated-wireless-mcp.yml
+- type: DomainSecurity
+  url: security/federated-wireless-domain-security.yml
+- type: Conformance
+  url: conformance/federated-wireless-conformance.yml
+- type: Lifecycle
+  url: lifecycle/federated-wireless-lifecycle.yml
+- type: Plans
+  url: plans/federated-wireless-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/federated-wireless-rate-limits.yml
+- type: Packages
+  url: packages/federated-wireless-packages.yml
+x-enrichment:
+  date: '2026-08-12'
+  status: minimal
+  artifacts_added: 12
+  pass: local-v1
+x-coverage:
+  state: gated
+  reason: customer-only-docs
+  detail: >-
+    Federated Wireless ships real APIs and names them itself, but every one is behind a customer
+    wall: the Spectrum Controller external SAS, IAM and KPI endpoints — whose base URLs the company's
+    own public configuration.js discloses — return HTTP 403 MissingAuthenticationTokenException from
+    AWS API Gateway, the MyFederated Zendesk help center 403s to anonymous visitors and exposes only
+    six FAQ articles about course logins, and the regulated SAS-CBSD and 6 GHz AFC hosts resolve to
+    company AWS infrastructure that refuses TCP 443 from the public internet. There is no developer
+    portal, no docs subdomain and no machine-readable contract anywhere public.
+  evidence:
+  - url: https://spectrum-api.federatedwireless.com/v1
+    status: 403
+  - url: https://spectrum-kpi.federatedwireless.com/v2.0
+    status: 403
+  - url: https://myfederated.federatedwireless.com/hc/en-us
+    status: 403
+  - url: https://federatedwireless.ai/openapi.json
+    status: 404
+  - url: https://federatedwireless.ai/.well-known/oauth-protected-resource
+    status: 200
+  checked: '2026-08-12'

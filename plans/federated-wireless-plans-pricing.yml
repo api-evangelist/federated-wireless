@@ -1,0 +1,46 @@
+generated: '2026-08-12'
+method: searched
+source: https://federatedwireless.ai/ (full site + llms.txt page index + sitemap)
+plan_count: 0
+pricing_url: null
+description: >-
+  Federated Wireless publishes no pricing page and no plan tiers. Every commercial route on the site
+  ends at a contact or demo-request form. The company's own llms.txt enumerates every public page on
+  federatedwireless.ai — 37 pages — and there is no pricing, plans, or buy page among them; the
+  sitemap agrees. This is an enterprise sales-gated model: SAS/AFC spectrum coordination is sold as a
+  contracted service to carriers, broadband providers, enterprises and government agencies.
+plans: []
+tiers_named_without_price:
+- name: PEGS (Premium Enterprise Grade Spectrum)
+  description: >-
+    A named premium support/services tier described on the support page — 15-minute guaranteed
+    response for critical issues, a dedicated Technical Customer Operations engineer, spectrum
+    managed services with KPI monitoring, CBRS planning and analytics, and access to premium and
+    custom features. No price, currency, billing period, quota or overage is published.
+  source: https://federatedwireless.ai/support/
+- name: CPI Certification course
+  description: >-
+    The Certified Professional Installer training program is the one thing the company sells online
+    — the MyFederated FAQ has articles on how to pay for the CPI course and how to redeem access
+    keys. The price is not published on any public page; it sits behind the portal sign-in.
+  source: https://myfederated.federatedwireless.com/hc/en-us/articles/52882540265363-How-can-I-pay-for-the-CPI-course
+commercial_routes:
+- type: contact-sales
+  url: https://federatedwireless.ai/contact/
+- type: demo-request
+  url: https://federatedwireless.ai/products/anp/anp-demo/
+- type: portal-signup
+  url: https://myfederated.federatedwireless.com
+note: >-
+  plan_count is a real, checked zero, not an unchecked field. No machine-readable pricing or catalog
+  endpoint exists either.
+x-evidence:
+  fetched: '2026-08-12'
+  probes:
+  - url: https://federatedwireless.ai/llms.txt
+    status: 200
+    note: 37 pages enumerated; no pricing or plans page present.
+  - url: https://federatedwireless.ai/sitemap.xml
+    status: 200
+  - url: https://federatedwireless.ai/support/
+    status: 200

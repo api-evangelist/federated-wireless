@@ -1,0 +1,115 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  https://federatedwireless.ai/services-definition/ + https://federatedwireless.ai/support/ +
+  https://spectrum.federatedwireless.com/configuration.js
+description: >-
+  Federated Wireless publishes no API versioning policy, no deprecation policy, no Sunset/Deprecation
+  header commitment, no formal SLA document and no public status page. What can be established is
+  the versioning SCHEME actually in use, read off the company's own published Spectrum Controller
+  configuration file, plus the availability and support claims made in marketing copy. Everything
+  operational beyond that sits behind the MyFederated customer portal.
+versioning:
+  scheme: uri-path
+  observed:
+  - api: Spectrum Controller external SAS API
+    version: v1
+    base: https://spectrum-api.federatedwireless.com/v1
+  - api: Spectrum IAM API
+    version: v1
+    base: https://spectrum-iam.federatedwireless.com/v1
+  - api: Spectrum KPI / analytics + reporting API
+    version: v2.0
+    base: https://spectrum-kpi.federatedwireless.com/v2.0
+  - api: Spectrum Controller internal SAS path
+    version: v1.1
+    base: /v1.1
+  docs: null
+  policy_published: false
+  source: https://spectrum.federatedwireless.com/configuration.js
+  note: >-
+    Versions were read from the Spectrum Controller web application's own public configuration.js,
+    which the provider serves unauthenticated. No version policy, support window or migration guide
+    accompanies them anywhere public.
+deprecation:
+  policy_url: null
+  policy_published: false
+  sunset_header: unknown
+  note: >-
+    No deprecation or sunset policy is published, and RFC 8594 Sunset/Deprecation header support
+    could not be tested — every product API returns 403 before any response headers of substance.
+    No `Deprecation` pointer is emitted.
+sla:
+  url: null
+  uptime_target: null
+  published_claims:
+  - claim: '99%+ SAS availability'
+    source: https://federatedwireless.ai/about/
+  - claim: '100% Availability 2-years Running'
+    source: https://federatedwireless.ai/services-definition/
+  - claim: 24x7x365 NOC support
+    source: https://federatedwireless.ai/support/
+  - claim: >-
+      PEGS (Premium Enterprise Grade Spectrum) tier advertises a 15-minute guaranteed response time
+      for critical issues and a dedicated Technical Customer Operations engineer.
+    source: https://federatedwireless.ai/support/
+  note: >-
+    These are marketing claims on product/marketing pages, not a signed or published SLA document
+    with credits and measurement methodology. Recorded as claims, not as an SLA.
+status_page:
+  url: null
+  published: false
+  probed:
+  - url: https://status.federatedwireless.com/
+    status: 0
+    reason: dns-nxdomain
+  - url: https://status.federatedwireless.ai/
+    status: 0
+    reason: dns-nxdomain
+  note: >-
+    No public status page exists on any Federated Wireless domain and none is linked from the site.
+    Incident communication appears to run through the MyFederated portal and the NOC. No
+    `StatusPage` pointer is emitted.
+changelog:
+  url: null
+  published: false
+  note: >-
+    There is no dated API or product changelog. The site publishes a Blog
+    (https://federatedwireless.ai/resources/blog/) and Press Releases
+    (https://federatedwireless.ai/resources/press-releases/), both with RSS feeds, but neither is a
+    changelog and neither carries release notes. No changelog/ artifact was written.
+deprecated_operations: []
+milestones:
+  source: https://federatedwireless.ai/about/
+  entries:
+  - date: '2012'
+    event: Company founded.
+  - date: '2016'
+    event: 3.5 GHz CBRS service trials.
+  - date: '2019'
+    event: First nationwide ESC (Environmental Sensing Capability) network.
+  - date: '2021'
+    event: Cloud-native 5G SAS platform.
+  - date: '2023'
+    event: FCC-certified 6 GHz AFC.
+  - date: '2024-02-23'
+    event: >-
+      FCC Office of Engineering and Technology announced approval of seven 6 GHz AFC systems for
+      commercial operation, including Federated Wireless, Inc.
+  - date: '2026-06-18'
+    event: Spectrum AI announced — physical-AI platform for shared spectrum.
+  - date: '2026'
+    event: >-
+      Primary web presence moved from federatedwireless.com to federatedwireless.ai; the legacy
+      domain now serves a "We have moved!" interstitial.
+x-evidence:
+  fetched: '2026-08-12'
+  probes:
+  - url: https://spectrum.federatedwireless.com/configuration.js
+    status: 200
+  - url: https://federatedwireless.ai/services-definition/
+    status: 200
+  - url: https://federatedwireless.ai/support/
+    status: 200
+  - url: https://status.federatedwireless.com/
+    status: 0
