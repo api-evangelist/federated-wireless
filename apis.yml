@@ -17,6 +17,17 @@ description: >-
   agent surface is a remote Model Context Protocol server on federatedwireless.ai, advertised through
   RFC 8414 and RFC 9728 metadata, which fronts the company's WordPress content estate rather than its
   spectrum platform.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://federatedwireless.ai/wp-content/uploads/2025/07/fw-federated-wireless-logo-horiz-rev-600px.png
 url: https://raw.githubusercontent.com/api-evangelist/federated-wireless/refs/heads/main/apis.yml
 x-type: company
