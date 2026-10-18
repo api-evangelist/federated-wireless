@@ -107,6 +107,9 @@ apis:
   baseURL: https://spectrum-iam.federatedwireless.com/v1
   tags:
   - Identity
+  - Identity and Access Management
+  tags_raw:
+  - Identity
   - Access Management
   properties:
   - type: Authentication
